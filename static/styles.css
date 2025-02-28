@@ -50,7 +50,7 @@ button.Mostrar_mas {
 
 button.Mostrar_mas:active {
   background-color: white;
-  color: black;
+  color: green;
 }
 
 button.Mostrar_menos{
@@ -60,5 +60,5 @@ button.Mostrar_menos{
 
 button.Mostrar_menos:active {
   background-color: white;
-  color: black;
+  color: red;
 }
