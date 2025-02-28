@@ -1,55 +1,37 @@
 import { FunctionComponent } from "preact";
 import Button from "./Button.tsx";
-import { useState } from "preact/hooks";
-import { FreshContext, Handlers } from "$fresh/server.ts";
+import { useSignal } from "@preact/signals";
 
 type props = {
     name: string,
     contador: number,
+    texto: string
 }
 
-type Contenido = {
-    texto?: string,
-}
-
-export const handler: Handlers = {
-    GET: (req: Request, ctx: FreshContext<unknown, Contenido>) => {
-        const url = new URL(req.url);
-        const texto = url.searchParams.get("texto") || undefined;
-        return ctx.render({ texto });
-    },
-}
-
-const Modulo: FunctionComponent<props & Contenido> = (Props) => {
-    let info = "";
+const Modulo: FunctionComponent<props> = (Props) => {
     const { name } = Props;
-    const [ number, setContador ] = useState<number>(Props.contador);
-    const [ string, setText ] = useState<string>("");
-    
+    const number = useSignal<number>(Props.contador);
+    const texto = useSignal<string>(Props.texto);
+    const input = useSignal<string>("");
+
     return (
         <>
-            <div class="oculto" hidden={number === 1}>
+            <div class="oculto" hidden={number.value === 1}>
                 <section class="espaciado">
                     <b>{name}</b>
-                    <Button variant ="Mostrar_mas" onClick={() => setContador(number + 1)}>Mostrar mas</Button>
+                    <Button variant ="Mostrar_mas" onClick={() => number.value++}>Mostrar mas</Button>
                 </section>
             </div>
-            <div class="ampliado" hidden={number === 0}>
+            <div class="ampliado" hidden={number.value === 0}>
                 <section class="espaciado">
                     <b>{name}</b>
-                    <Button variant = "Mostrar_menos" onClick={() => setContador(number - 1)}>Mostrar menos</Button>
+                    <Button variant = "Mostrar_menos" onClick={() => number.value--}>Mostrar menos</Button>
                 </section>
                 <hr/>
                 <section class="columnas">
-                    <i>{Props.texto}</i>
-                    <input type="text" id="itexto" name="texto" value={Props.texto}></input>
-                    <button type="submit" onClick={
-                        () => {
-                            if(Props.texto){
-                                setText(string+Props.texto);
-                            }
-                        }
-                    }>Input de texto</button>
+                    <i>{texto.value}</i>
+                    <input type="text" id="itexto" name="texto" onInput={(e) => input.value = e.currentTarget.value}/>
+                    <button type="submit" onClick={() => texto.value = input.value}>Input de texto</button>
                 </section>
             </div>
         </>
@@ -57,26 +39,3 @@ const Modulo: FunctionComponent<props & Contenido> = (Props) => {
 }
 
 export default Modulo;
-
-/**
- * 
-            <div class="ampliado" hidden={number%2 === 0}>
-                <header>
-                    <b class = "left">{name}</b>
-                    <Button variant = "Mostrar_menos" onClick={() => setContador(number - 1)}>Mostrar menos</Button>
-                </header>
-                    <hr />
-                    <section class="columnas">
-                        <i>{Props.texto}</i>
-                        <input type="text" id="itexto" name="texto" value={Props.texto}></input>
-                        <button type="submit" onClick={
-                            () => {
-                                if(Props.texto){
-                                    setText(string+Props.texto);
-                                }
-                            }
-                        }
-                        >Input de texto</button>
-                    </section>
-            </div>
- */

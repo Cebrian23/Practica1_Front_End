@@ -1,7 +1,7 @@
 import { FunctionComponent, JSX } from "preact";
 
 type ButtonProps = JSX.HTMLAttributes<HTMLButtonElement> & {
-  variant: "Mostrar_mas" | "Mostrar_menos" | "Input_de_texto";
+  variant: "Mostrar_mas" | "Mostrar_menos";
 }
 
 const Button: FunctionComponent<ButtonProps> = (props) => {
